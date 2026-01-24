@@ -1,10 +1,8 @@
 import './style.css';
 import { storage } from './storage.js';
 
-// Cargar productos desde el almacenamiento
-let products = storage.getProducts();
-
 // 1. Estados de la Aplicación
+let products = [];
 let cart = [];
 let isCartOpen = false;
 
@@ -22,9 +20,12 @@ document.querySelector('#app').innerHTML = `
   <header>
     <div class="container header-content">
       <a href="#" class="logo">🛍️ Ale<span>Shop</span></a>
-      <button id="cart-btn" class="cart-btn">
-        🛒 Carrito <span id="cart-count" class="cart-count">0</span>
-      </button>
+      <div style="display: flex; gap: 1rem; align-items: center;">
+        <a href="/admin.html" class="btn-secondary" style="text-decoration: none; font-size: 0.9rem; padding: 0.5rem 1rem;">⚙️ Admin</a>
+        <button id="cart-btn" class="cart-btn">
+          🛒 Carrito <span id="cart-count" class="cart-count">0</span>
+        </button>
+      </div>
     </div>
   </header>
 
@@ -96,6 +97,11 @@ document.querySelector('#app').innerHTML = `
 const renderProducts = () => {
   const productList = document.querySelector('#product-list');
   
+  if (products.length === 0) {
+    productList.innerHTML = '<p style="text-align:center; grid-column: 1/-1; padding: 2rem;">No hay productos disponibles por ahora.</p>';
+    return;
+  }
+
   productList.innerHTML = products.map(product => `
     <article class="product-card">
       <img src="${product.image}" alt="${product.name}" class="product-image" loading="lazy">
@@ -113,7 +119,7 @@ const renderProducts = () => {
   // Añadir eventos a los botones de "Agregar"
   document.querySelectorAll('.btn-add').forEach(button => {
     button.addEventListener('click', (e) => {
-      const id = parseInt(e.target.dataset.id);
+      const id = e.target.dataset.id;
       addToCart(id);
     });
   });
@@ -128,11 +134,12 @@ const addToCart = (id) => {
     renderCartItems();
     openCart();
     
-    // Feedback visual simple (opcional)
     const btn = document.querySelector(`button[data-id="${id}"]`);
-    const originalText = btn.innerText;
-    btn.innerText = "¡Agregado! ✅";
-    setTimeout(() => btn.innerText = originalText, 1500);
+    if (btn) {
+      const originalText = btn.innerText;
+      btn.innerText = "¡Agregado! ✅";
+      setTimeout(() => btn.innerText = originalText, 1500);
+    }
   }
 };
 
@@ -150,7 +157,6 @@ const renderCartItems = () => {
   const cartItemsContainer = document.querySelector('#cart-items');
   const totalPriceElement = document.querySelector('#cart-total-price');
   
-  // Calcular total
   const total = cart.reduce((sum, item) => sum + item.price, 0);
   totalPriceElement.innerText = formatCurrency(total);
 
@@ -172,10 +178,8 @@ const renderCartItems = () => {
     </div>
   `).join('');
 
-  // Eventos para eliminar items
   document.querySelectorAll('.remove-btn').forEach(btn => {
     btn.addEventListener('click', (e) => {
-      // Necesitamos encontrar el botón correcto aunque se haga click en un hijo si lo hubiera
       const index = parseInt(e.target.closest('.remove-btn').dataset.index);
       removeFromCart(index);
     });
@@ -199,17 +203,19 @@ document.querySelector('#cart-overlay').addEventListener('click', (e) => {
   if (e.target.id === 'cart-overlay') closeCart();
 });
 
-// Finalizar Compra (Simulación WhatsApp)
 document.querySelector('#checkout-btn').addEventListener('click', () => {
   if (cart.length === 0) return alert('¡Tu carrito está vacío!');
   
   const total = cart.reduce((sum, item) => sum + item.price, 0);
   const message = `Hola Ale Shop! Me gustaría comprar estos productos:\n${cart.map(i => `- ${i.name}`).join('\n')}\n\nTotal: ${formatCurrency(total)}`;
-  
-  // Codificar para URL
   const encodedMessage = encodeURIComponent(message);
   window.open(`https://wa.me/573001234567?text=${encodedMessage}`, '_blank');
 });
 
-// Inicializar la tienda
-renderProducts();
+// Cargar productos desde Firestore de forma asíncrona e inicializar
+async function init() {
+  products = await storage.getProducts();
+  renderProducts();
+}
+
+init();

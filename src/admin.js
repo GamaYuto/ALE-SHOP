@@ -1,5 +1,6 @@
 import './style.css';
 import { storage } from './storage.js';
+import { authService } from './auth.js';
 
 // Estado Local del Admin
 let products = [];
@@ -13,24 +14,39 @@ const productForm = document.getElementById('product-form');
 const productModal = document.getElementById('product-modal');
 const tableBody = document.getElementById('admin-products-list');
 
-// 1. Lógica de Autenticación (Login Simple)
-loginForm.addEventListener('submit', (e) => {
-  e.preventDefault();
-  const user = document.getElementById('username').value;
-  const pass = document.getElementById('password').value;
-
-  // Credenciales "Hardcoded" para demostración
-  if (user === 'admin' && pass === '1234') {
+// 1. Gestión de Autenticación Real con Firebase
+authService.subscribeToAuthChanges((user) => {
+  if (user) {
+    // Usuario autenticado
     loginScreen.style.display = 'none';
     dashboardScreen.style.display = 'block';
-    loadProducts(); // Cargar datos al entrar
+    loadProducts();
   } else {
-    alert('Usuario o contraseña incorrectos ❌');
+    // Usuario no autenticado
+    loginScreen.style.display = 'block';
+    dashboardScreen.style.display = 'none';
+  }
+});
+
+loginForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const email = document.getElementById('username').value; // Usaremos email en Firebase
+  const pass = document.getElementById('password').value;
+
+  try {
+    await authService.login(email, pass);
+    alert('¡Bienvenido! 👋');
+  } catch (error) {
+    let msg = 'Error al ingresar ❌';
+    if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
+      msg = 'Correo o contraseña incorrectos. Asegúrate de haber creado el usuario en la consola de Firebase.';
+    }
+    alert(msg);
   }
 });
 
 document.getElementById('btn-logout').addEventListener('click', () => {
-  window.location.reload();
+  authService.logout();
 });
 
 document.getElementById('btn-view-site').addEventListener('click', () => {
@@ -38,8 +54,8 @@ document.getElementById('btn-view-site').addEventListener('click', () => {
 });
 
 // 2. Gestión de Productos (CRUD)
-const loadProducts = () => {
-  products = storage.getProducts();
+const loadProducts = async () => {
+  products = await storage.getProducts();
   renderTable();
 };
 
@@ -52,9 +68,14 @@ const formatCurrency = (value) => {
 };
 
 const renderTable = () => {
+  if (products.length === 0) {
+    tableBody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding: 2rem;">No hay productos. Agrega el primero.</td></tr>';
+    return;
+  }
+
   tableBody.innerHTML = products.map(p => `
     <tr>
-      <td><img src="${p.image}" alt="img"></td>
+      <td><img src="${p.image}" alt="img" style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px;"></td>
       <td>
         <div>${p.name}</div>
         <small style="color:gray">${p.category}</small>
@@ -67,27 +88,33 @@ const renderTable = () => {
         </span>
       </td>
       <td>
-        <button class="btn-edit" data-id="${p.id}" style="margin-right:0.5rem; cursor:pointer;">✏️</button>
-        <button class="btn-delete" data-id="${p.id}" style="color:red; cursor:pointer;">🗑️</button>
+        <button class="btn-edit" data-id="${p.id}" style="margin-right:0.5rem; cursor:pointer; background:none; border:none;">✏️</button>
+        <button class="btn-delete" data-id="${p.id}" style="color:red; cursor:pointer; background:none; border:none;">🗑️</button>
       </td>
     </tr>
   `).join('');
 
   // Re-asignar eventos
   document.querySelectorAll('.btn-edit').forEach(btn => {
-    btn.addEventListener('click', (e) => openModal(parseInt(e.target.dataset.id)));
+    btn.addEventListener('click', (e) => {
+      const id = e.target.closest('.btn-edit').dataset.id;
+      openModal(id);
+    });
   });
   
   document.querySelectorAll('.btn-delete').forEach(btn => {
-    btn.addEventListener('click', (e) => deleteProduct(parseInt(e.target.dataset.id)));
+    btn.addEventListener('click', (e) => {
+      const id = e.target.closest('.btn-delete').dataset.id;
+      deleteProduct(id);
+    });
   });
 };
 
 // 3. Crear / Editar
 const openModal = (id = null) => {
-  isEditing = !!id; // Si hay ID es edición, sino es nuevo
+  isEditing = !!id;
   document.getElementById('modal-title').innerText = isEditing ? 'Editar Producto' : 'Nuevo Producto';
-  document.getElementById('product-modal').classList.add('open');
+  productModal.classList.add('open');
 
   if (isEditing) {
     const p = products.find(x => x.id === id);
@@ -100,22 +127,22 @@ const openModal = (id = null) => {
     document.getElementById('p-active').checked = p.active;
   } else {
     productForm.reset();
+    document.getElementById('edit-id').value = '';
     document.getElementById('p-active').checked = true;
   }
 };
 
 const closeModal = () => {
-  document.getElementById('product-modal').classList.remove('open');
+  productModal.classList.remove('open');
 };
 
 document.getElementById('btn-create').addEventListener('click', () => openModal());
 document.getElementById('btn-cancel').addEventListener('click', closeModal);
 
-productForm.addEventListener('submit', (e) => {
+productForm.addEventListener('submit', async (e) => {
   e.preventDefault();
   
   const productData = {
-    id: isEditing ? parseInt(document.getElementById('edit-id').value) : Date.now(),
     name: document.getElementById('p-name').value,
     category: document.getElementById('p-category').value,
     price: parseInt(document.getElementById('p-price').value),
@@ -124,24 +151,30 @@ productForm.addEventListener('submit', (e) => {
     active: document.getElementById('p-active').checked
   };
 
-  if (isEditing) {
-    const index = products.findIndex(p => p.id === productData.id);
-    products[index] = productData;
-  } else {
-    products.push(productData);
-  }
+  try {
+    if (isEditing) {
+      const id = document.getElementById('edit-id').value;
+      await storage.updateProduct(id, productData);
+    } else {
+      await storage.addProduct(productData);
+    }
 
-  storage.saveProducts(products); // IMPORTANTE: Guardar en LocalStorage
-  loadProducts();
-  closeModal();
-  alert('¡Producto guardado correctamente! ✅');
+    await loadProducts();
+    closeModal();
+    alert('¡Producto guardado correctamente! ✅');
+  } catch (error) {
+    alert('Error al guardar el producto ❌');
+  }
 });
 
 // 4. Eliminar
-const deleteProduct = (id) => {
+const deleteProduct = async (id) => {
   if (confirm('¿Estás seguro de eliminar este producto?')) {
-    products = products.filter(p => p.id !== id);
-    storage.saveProducts(products);
-    loadProducts();
+    try {
+      await storage.deleteProduct(id);
+      await loadProducts();
+    } catch (error) {
+      alert('Error al eliminar el producto ❌');
+    }
   }
 };
