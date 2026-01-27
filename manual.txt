@@ -1,0 +1,97 @@
+MANUAL DE IDENTIDAD VISUAL - ALE-SHOP
+Versión: 1.0.0
+Última actualización: Agosto 2025
+
+--------------------------------------------------------------------------------
+
+1. INTRODUCCIÓN
+
+Ale-Shop es una marca moderna de comercio electrónico enfocada en la moda y el estilo de vida. Nuestra identidad visual transmite confianza, cercanía y modernidad. Este manual establece las directrices para mantener la coherencia visual en todas las plataformas digitales (Web, Móvil, Redes Sociales).
+
+--------------------------------------------------------------------------------
+
+2. LOGOTIPO
+
+2.1 CONCEPTO
+El logotipo combina la inicial "A" con la silueta de una bolsa de compras, integrando elementos de moda (zapato, camisa) en un estilo minimalista y plano (flat design).
+
+2.2 VARIACIONES
+* Logotipo Principal: Símbolo + Texto "Ale-Shop" a la derecha o debajo.
+* Isotipo (Favicon/App Icon): Únicamente el símbolo de la bolsa "A". Debe usarse en espacios reducidos (menos de 64px) como la barra del navegador o el icono de la app en el celular.
+
+2.3 ÁREA DE SEGURIDAD
+Siempre se debe mantener un espacio libre alrededor del logo equivalente a la altura de la letra "e" del nombre, para asegurar su legibilidad y que no se mezcle con otros elementos.
+
+--------------------------------------------------------------------------------
+
+3. PALETA DE COLORES
+
+Nuestra paleta combina tonos fríos y profesionales con acentos cálidos.
+
+COLOR: Turquesa Ale
+HEX: #2A9D8F
+VARIABLE CSS: --ale-primary
+USO: Color principal de marca, barras de navegación, enlaces activos.
+
+COLOR: Coral Naranja
+HEX: #E76F51
+VARIABLE CSS: --ale-accent
+USO: Llamadas a la acción (CTA), botones de "Comprar", ofertas, errores.
+
+COLOR: Gris Profundo
+HEX: #264653
+VARIABLE CSS: --ale-dark
+USO: Títulos, pie de página, texto de alto contraste.
+
+COLOR: Gris Texto
+HEX: #2C3E50
+VARIABLE CSS: --text-main
+USO: Párrafos y descripciones largas.
+
+COLOR: Blanco Humo
+HEX: #F8F9FA
+VARIABLE CSS: --bg-light
+USO: Fondos de sección, fondos de pantalla general.
+
+--------------------------------------------------------------------------------
+
+4. TIPOGRAFÍA
+
+4.1 TÍTULOS (Headings)
+* Fuente: Nunito (Google Fonts)
+* Estilo: Rounded Sans-Serif.
+* Pesos: Bold (700) para H1 y H2; Semi-Bold (600) para H3.
+* Uso: Encabezados principales y nombres de productos.
+
+4.2 CUERPO DE TEXTO (Body)
+* Fuente: Open Sans (Google Fonts)
+* Estilo: Sans-Serif Humanist.
+* Pesos: Regular (400) para lectura; Semi-Bold (600) para énfasis.
+* Uso: Descripciones, menús, botones y textos largos.
+
+--------------------------------------------------------------------------------
+
+5. UI KIT / ELEMENTOS DE INTERFAZ
+
+BORDES (Border Radius):
+* Botones: 25px (Forma de píldora).
+* Tarjetas (Cards): 12px (Bordes suavemente redondeados).
+* Inputs: 8px.
+
+SOMBRAS (Shadows):
+* Sutiles y difusas.
+* Color sugerido: rgba(38, 70, 83, 0.15).
+
+ICONOGRAFÍA:
+* Estilo: Rounded / Material Icons Round.
+* Grosor de línea: Regular.
+* Color: Gris Profundo (normal) o Turquesa Ale (activo).
+
+--------------------------------------------------------------------------------
+
+6. USOS INCORRECTOS (NO HACER)
+
+[X] NO distorsionar las proporciones del logo (estirarlo o aplastarlo).
+[X] NO cambiar los colores del logo por otros fuera de la paleta.
+[X] NO usar tipografías con "Serifas" (como Times New Roman).
+[X] NO colocar el logo sobre fondos ruidosos sin protección.

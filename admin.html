@@ -3,11 +3,12 @@
 
 <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Administrador | Ale Shop</title>
     <!-- Usamos los mismos estilos base más algunos extras -->
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700&family=Open+Sans:wght@400;600&display=swap"
+        rel="stylesheet">
 </head>
 
 <body>
@@ -15,7 +16,8 @@
 
         <!-- 1. Pantalla de Login -->
         <div id="login-screen" class="admin-container"
-            style="max-width: 400px; margin: 100px auto; padding: 2rem; background: white; border-radius: 15px; box-shadow: var(--shadow);">
+            style="max-width: 400px; margin: 100px auto; padding: 2rem; background: white; border-radius: 15px; box-shadow: var(--shadow); text-align: center;">
+            <img src="/LOGO.svg" alt="Ale Shop Logo" style="height: 60px; margin-bottom: 1rem;">
             <h2 style="text-align:center; margin-bottom: 1.5rem;">🔐 Acceso Restringido</h2>
             <form id="login-form" class="admin-form">
                 <div class="form-group">
@@ -33,38 +35,132 @@
         <!-- 2. Dashboard (Oculto inicialmente) -->
         <div id="dashboard-screen" class="container" style="display: none; padding-top: 2rem;">
             <header class="admin-header">
-                <h2>⚙️ Panel de Control</h2>
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <img src="/LOGO.svg" alt="Ale Shop Logo" style="height: 40px;">
+                    <h2 style="margin: 0;">Panel de Control</h2>
+                </div>
                 <div style="display:flex; gap: 1rem;">
                     <button id="btn-view-site" class="btn-secondary">Ver Tienda</button>
                     <button id="btn-logout" class="btn-secondary">Cerrar Sesión</button>
                 </div>
             </header>
 
-            <section class="admin-actions">
-                <button id="btn-create" class="btn-primary">+ Nuevo Producto</button>
+            <!-- Pestañas de navegación -->
+            <div style="display: flex; gap: 1rem; margin-bottom: 2rem; border-bottom: 2px solid #e5e7eb;">
+                <button id="tab-orders" class="tab-btn active"
+                    style="padding: 1rem 2rem; border: none; background: none; cursor: pointer; font-weight: 600; border-bottom: 3px solid var(--primary); color: var(--primary);">
+                    🛒 Pedidos
+                </button>
+                <button id="tab-products" class="tab-btn"
+                    style="padding: 1rem 2rem; border: none; background: none; cursor: pointer; font-weight: 600; border-bottom: 3px solid transparent; color: var(--gray);">
+                    📦 Productos
+                </button>
+                <button id="tab-categories" class="tab-btn"
+                    style="padding: 1rem 2rem; border: none; background: none; cursor: pointer; font-weight: 600; border-bottom: 3px solid transparent; color: var(--gray);">
+                    🏷️ Categorías
+                </button>
+            </div>
+
+            <!-- Sección de Pedidos -->
+            <section id="section-orders" class="admin-section">
+                <div style="margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center;">
+                    <div style="display: flex; gap: 0.5rem;">
+                        <button class="filter-status active" data-status="all"
+                            style="padding: 0.5rem 1rem; border: 1px solid #d1d5db; background: var(--primary); color: white; border-radius: 6px; cursor: pointer; font-size: 0.9rem;">
+                            Todos
+                        </button>
+                        <button class="filter-status" data-status="pending"
+                            style="padding: 0.5rem 1rem; border: 1px solid #d1d5db; background: white; color: var(--dark); border-radius: 6px; cursor: pointer; font-size: 0.9rem;">
+                            Pendientes
+                        </button>
+                        <button class="filter-status" data-status="processing"
+                            style="padding: 0.5rem 1rem; border: 1px solid #d1d5db; background: white; color: var(--dark); border-radius: 6px; cursor: pointer; font-size: 0.9rem;">
+                            En Proceso
+                        </button>
+                        <button class="filter-status" data-status="shipped"
+                            style="padding: 0.5rem 1rem; border: 1px solid #d1d5db; background: white; color: var(--dark); border-radius: 6px; cursor: pointer; font-size: 0.9rem;">
+                            Enviados
+                        </button>
+                        <button class="filter-status" data-status="delivered"
+                            style="padding: 0.5rem 1rem; border: 1px solid #d1d5db; background: white; color: var(--dark); border-radius: 6px; cursor: pointer; font-size: 0.9rem;">
+                            Entregados
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Tabla de Pedidos -->
+                <div class="table-responsive">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>ID Pedido</th>
+                                <th>Cliente</th>
+                                <th>Productos</th>
+                                <th>Total</th>
+                                <th>Estado</th>
+                                <th>Fecha</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-orders-list">
+                            <!-- Se llena con JS -->
+                        </tbody>
+                    </table>
+                </div>
             </section>
 
-            <!-- Tabla de Productos -->
-            <div class="table-responsive">
-                <table class="admin-table">
-                    <thead>
-                        <tr>
-                            <th>Imagen</th>
-                            <th>Nombre</th>
-                            <th>Precio (COP)</th>
-                            <th>Stock</th>
-                            <th>Estado</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody id="admin-products-list">
-                        <!-- Se llena con JS -->
-                    </tbody>
-                </table>
-            </div>
+            <!-- Sección de Productos -->
+            <section id="section-products" class="admin-section">
+                <div class="admin-actions">
+                    <button id="btn-create" class="btn-primary">+ Nuevo Producto</button>
+                </div>
+
+                <!-- Tabla de Productos -->
+                <div class="table-responsive">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Imagen</th>
+                                <th>Nombre</th>
+                                <th>Precio (COP)</th>
+                                <th>Stock</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-products-list">
+                            <!-- Se llena con JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Sección de Categorías -->
+            <section id="section-categories" class="admin-section" style="display: none;">
+                <div class="admin-actions">
+                    <button id="btn-create-category" class="btn-primary">+ Nueva Categoría</button>
+                </div>
+
+                <!-- Tabla de Categorías -->
+                <div class="table-responsive">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Icono</th>
+                                <th>Nombre</th>
+                                <th>Productos</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-categories-list">
+                            <!-- Se llena con JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
         </div>
 
-        <!-- 3. Modal para Crear/Editar (Oculto) -->
+        <!-- 3. Modal para Crear/Editar Producto (Oculto) -->
         <div id="product-modal" class="cart-overlay">
             <div class="cart-modal" style="max-width: 600px; margin: auto; height: auto; border-radius: 15px;">
                 <h3 id="modal-title">Editar Producto</h3>
@@ -97,9 +193,21 @@
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <label>URL de Imagen</label>
-                        <input type="url" id="p-image" placeholder="https://..." required class="input-field">
+                    <div class="form-group"
+                        style="border: 2px dashed #ccc; padding: 1rem; border-radius: 8px; text-align: center;">
+                        <label style="margin-bottom: 0.5rem; display: block; cursor: pointer;">
+                            📷 Seleccionar/Tomar Foto del Producto
+                            <input type="file" id="p-file" accept="image/*" style="display: none;">
+                        </label>
+                        <input type="hidden" id="p-image">
+                        <div id="image-preview" style="margin-top: 0.5rem; display: none;">
+                            <img src="" alt="Vista previa" style="max-height: 150px; border-radius: 8px;">
+                            <p style="font-size: 0.8rem; color: #666; margin-top: 0.3rem;">Imagen lista para guardar</p>
+                        </div>
+                        <div id="upload-status"
+                            style="display: none; margin-top: 0.5rem; font-size: 0.8rem; color: var(--primary);">
+                            Procesando imagen... ⏳
+                        </div>
                     </div>
 
                     <div class="form-group" style="flex-direction:row; align-items:center; gap:0.5rem;">
@@ -115,7 +223,53 @@
             </div>
         </div>
 
+        <!-- 4. Modal para Crear/Editar Categoría (Oculto) -->
+        <div id="category-modal" class="cart-overlay">
+            <div class="cart-modal" style="max-width: 500px; margin: auto; height: auto; border-radius: 15px;">
+                <h3 id="category-modal-title">Nueva Categoría</h3>
+                <form id="category-form" style="display:flex; flex-direction:column; gap:1rem; margin-top:1rem;">
+                    <input type="hidden" id="edit-category-id">
+
+                    <div class="form-group">
+                        <label>Nombre de la Categoría</label>
+                        <input type="text" id="cat-name" required class="input-field" placeholder="Ej: Ropa">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Icono (Emoji)</label>
+                        <input type="text" id="cat-icon" class="input-field" placeholder="Selecciona un emoji"
+                            maxlength="2" readonly style="cursor: pointer;">
+
+                        <!-- Selector de Emojis -->
+                        <div id="emoji-picker"
+                            style="display: grid; grid-template-columns: repeat(8, 1fr); gap: 0.5rem; margin-top: 0.5rem; padding: 1rem; background: var(--light); border-radius: 8px; max-height: 200px; overflow-y: auto;">
+                            <!-- Los emojis se cargarán aquí -->
+                        </div>
+                        <small style="color: var(--gray); font-size: 0.85rem;">Haz clic en un emoji para
+                            seleccionarlo</small>
+                    </div>
+
+                    <div style="display:flex; gap:1rem; margin-top:1rem;">
+                        <button type="button" id="btn-cancel-category" class="btn-secondary"
+                            style="flex:1;">Cancelar</button>
+                        <button type="submit" class="btn-primary" style="flex:1;">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
     </div>
+    <!-- Modal de Notificaciones -->
+    <div id="notification-modal" class="notification-overlay">
+        <div class="notification-card">
+            <div id="notification-icon" class="notification-icon">✨</div>
+            <h3 id="notification-title">Notificación</h3>
+            <p id="notification-message">Mensaje...</p>
+            <button id="notification-btn" class="btn-cta"
+                style="width: 100%; margin-top: 1rem; font-size: 1rem; padding: 0.7rem;">Entendido</button>
+        </div>
+    </div>
+
     <script type="module" src="/src/admin.js"></script>
 </body>
 

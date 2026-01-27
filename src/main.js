@@ -1,10 +1,13 @@
 import './style.css';
 import { storage } from './storage.js';
+import { categoriesService } from './categories.js';
 
 // 1. Estados de la Aplicación
 let products = [];
+let categories = [];
 let cart = [];
 let isCartOpen = false;
+let currentFilter = 'all'; // 'all' o el nombre de una categoría
 
 // 2. Utilidad para formatear dinero en Pesos Colombianos (COP)
 const formatCurrency = (value) => {
@@ -19,7 +22,9 @@ const formatCurrency = (value) => {
 document.querySelector('#app').innerHTML = `
   <header>
     <div class="container header-content">
-      <a href="#" class="logo">🛍️ Ale<span>Shop</span></a>
+      <a href="#" class="logo">
+        <img src="/LOGO.svg" alt="Ale Shop Logo" style="height: 45px; width: auto;">
+      </a>
       <div style="display: flex; gap: 1rem; align-items: center;">
         <a href="/admin.html" class="btn-secondary" style="text-decoration: none; font-size: 0.9rem; padding: 0.5rem 1rem;">⚙️ Admin</a>
         <button id="cart-btn" class="cart-btn">
@@ -40,6 +45,12 @@ document.querySelector('#app').innerHTML = `
 
     <section id="products" class="container">
       <h2 class="products-title">Nuestros Favoritos</h2>
+      
+      <!-- Filtros de Categorías -->
+      <div id="category-filters" style="display: flex; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 2rem; justify-content: center;">
+        <!-- Los filtros se cargarán aquí dinámicamente -->
+      </div>
+      
       <div id="product-list" class="products-grid">
         <!-- Los productos se cargarán aquí dinámicamente -->
       </div>
@@ -50,19 +61,69 @@ document.querySelector('#app').innerHTML = `
   <div id="cart-overlay" class="cart-overlay">
     <div class="cart-modal">
       <div class="cart-header">
-        <h3>Tu Carrito</h3>
+        <h3 id="cart-title">Tu Carrito</h3>
         <button id="close-cart" class="close-cart">&times;</button>
       </div>
-      <div id="cart-items" class="cart-items">
-        <!-- Items del carrito -->
-        <p style="text-align:center; color: var(--gray);">Tu carrito está vacío.</p>
-      </div>
-      <div class="cart-total">
-        <div class="total-row">
-          <span>Total:</span>
-          <span id="cart-total-price">$ 0</span>
+      
+      <!-- Vista del Carrito -->
+      <div id="cart-view">
+        <div id="cart-items" class="cart-items">
+          <!-- Items del carrito -->
+          <p style="text-align:center; color: var(--gray);">Tu carrito está vacío.</p>
         </div>
-        <button id="checkout-btn" class="btn-checkout">Finalizar Compra (WhatsApp)</button>
+        <div class="cart-total">
+          <div class="total-row">
+            <span>Total:</span>
+            <span id="cart-total-price">$ 0</span>
+          </div>
+          <button id="proceed-checkout-btn" class="btn-checkout">Continuar con la Compra</button>
+        </div>
+      </div>
+      
+      <!-- Vista del Formulario de Checkout -->
+      <div id="checkout-view" style="display: none;">
+        <form id="checkout-form" style="display: flex; flex-direction: column; gap: 1rem;">
+          <div class="form-group">
+            <label>Nombre Completo *</label>
+            <input type="text" id="customer-name" required class="input-field" placeholder="Juan Pérez">
+          </div>
+          
+          <div class="form-group">
+            <label>Teléfono/WhatsApp *</label>
+            <input type="tel" id="customer-phone" required class="input-field" placeholder="300 123 4567">
+          </div>
+          
+          <div class="form-group">
+            <label>Correo Electrónico</label>
+            <input type="email" id="customer-email" class="input-field" placeholder="correo@ejemplo.com">
+          </div>
+          
+          <div class="form-group">
+            <label>Dirección de Envío *</label>
+            <input type="text" id="customer-address" required class="input-field" placeholder="Calle 123 #45-67">
+          </div>
+          
+          <div class="form-group">
+            <label>Ciudad *</label>
+            <input type="text" id="customer-city" required class="input-field" placeholder="Bogotá">
+          </div>
+          
+          <div class="form-group">
+            <label>Notas adicionales (opcional)</label>
+            <textarea id="customer-notes" class="input-field" rows="3" placeholder="Ej: Entregar en la portería"></textarea>
+          </div>
+          
+          <div class="cart-total" style="margin-top: 1rem;">
+            <div class="total-row">
+              <span>Total a Pagar:</span>
+              <span id="checkout-total-price">$ 0</span>
+            </div>
+            <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+              <button type="button" id="back-to-cart-btn" class="btn-secondary" style="flex: 1;">Volver al Carrito</button>
+              <button type="submit" class="btn-checkout" style="flex: 1;">Confirmar Pedido</button>
+            </div>
+          </div>
+        </form>
       </div>
     </div>
   </div>
@@ -93,16 +154,49 @@ document.querySelector('#app').innerHTML = `
   </footer>
 `;
 
-// 4. Función para mostrar los productos en la pantalla
+// 4. Función para renderizar los filtros de categorías
+const renderCategoryFilters = () => {
+  const filtersContainer = document.querySelector('#category-filters');
+  
+  const allButton = `
+    <button class="category-filter ${currentFilter === 'all' ? 'active' : ''}" data-category="all">
+      🌟 Todos
+    </button>
+  `;
+  
+  const categoryButtons = categories.map(cat => `
+    <button class="category-filter ${currentFilter === cat.name ? 'active' : ''}" data-category="${cat.name}">
+      ${cat.icon || '📦'} ${cat.name}
+    </button>
+  `).join('');
+  
+  filtersContainer.innerHTML = allButton + categoryButtons;
+  
+  // Agregar eventos a los botones de filtro
+  document.querySelectorAll('.category-filter').forEach(button => {
+    button.addEventListener('click', (e) => {
+      currentFilter = e.target.dataset.category;
+      renderCategoryFilters();
+      renderProducts();
+    });
+  });
+};
+
+// 5. Función para mostrar los productos en la pantalla
 const renderProducts = () => {
   const productList = document.querySelector('#product-list');
   
-  if (products.length === 0) {
-    productList.innerHTML = '<p style="text-align:center; grid-column: 1/-1; padding: 2rem;">No hay productos disponibles por ahora.</p>';
+  // Filtrar productos según la categoría seleccionada
+  const filteredProducts = currentFilter === 'all' 
+    ? products.filter(p => p.active !== false)
+    : products.filter(p => p.category === currentFilter && p.active !== false);
+  
+  if (filteredProducts.length === 0) {
+    productList.innerHTML = '<p style="text-align:center; grid-column: 1/-1; padding: 2rem;">No hay productos disponibles en esta categoría.</p>';
     return;
   }
 
-  productList.innerHTML = products.map(product => `
+  productList.innerHTML = filteredProducts.map(product => `
     <article class="product-card">
       <img src="${product.image}" alt="${product.name}" class="product-image" loading="lazy">
       <div class="product-info">
@@ -194,6 +288,30 @@ const openCart = () => {
 const closeCart = () => {
   isCartOpen = false;
   document.querySelector('#cart-overlay').classList.remove('open');
+  // Volver a la vista del carrito al cerrar
+  showCartView();
+};
+
+// Navegación entre vistas del modal
+const showCartView = () => {
+  document.getElementById('cart-view').style.display = 'block';
+  document.getElementById('checkout-view').style.display = 'none';
+  document.getElementById('cart-title').innerText = 'Tu Carrito';
+};
+
+const showCheckoutView = () => {
+  if (cart.length === 0) {
+    showNotification('Carrito Vacío', '¡Tu carrito está vacío!', '🛒');
+    return;
+  }
+  
+  document.getElementById('cart-view').style.display = 'none';
+  document.getElementById('checkout-view').style.display = 'block';
+  document.getElementById('cart-title').innerText = 'Datos de Envío';
+  
+  // Actualizar el total en el checkout
+  const total = cart.reduce((sum, item) => sum + item.price, 0);
+  document.getElementById('checkout-total-price').innerText = formatCurrency(total);
 };
 
 // 6. Event Listeners Globales
@@ -203,19 +321,140 @@ document.querySelector('#cart-overlay').addEventListener('click', (e) => {
   if (e.target.id === 'cart-overlay') closeCart();
 });
 
-document.querySelector('#checkout-btn').addEventListener('click', () => {
-  if (cart.length === 0) return alert('¡Tu carrito está vacío!');
+// Botón para proceder al checkout
+document.querySelector('#proceed-checkout-btn').addEventListener('click', showCheckoutView);
+
+// Botón para volver al carrito
+document.querySelector('#back-to-cart-btn').addEventListener('click', showCartView);
+
+// Manejar el envío del formulario de checkout
+document.querySelector('#checkout-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
   
+  if (cart.length === 0) {
+    showNotification('Carrito Vacío', '¡Tu carrito está vacío!', '🛒');
+    return;
+  }
+  
+  // Recopilar datos del cliente
+  const customerData = {
+    name: document.getElementById('customer-name').value,
+    phone: document.getElementById('customer-phone').value,
+    email: document.getElementById('customer-email').value || '',
+    address: document.getElementById('customer-address').value,
+    city: document.getElementById('customer-city').value,
+    notes: document.getElementById('customer-notes').value || ''
+  };
+  
+  // Calcular total
   const total = cart.reduce((sum, item) => sum + item.price, 0);
-  const message = `Hola Ale Shop! Me gustaría comprar estos productos:\n${cart.map(i => `- ${i.name}`).join('\n')}\n\nTotal: ${formatCurrency(total)}`;
-  const encodedMessage = encodeURIComponent(message);
-  window.open(`https://wa.me/573001234567?text=${encodedMessage}`, '_blank');
+  
+  // Preparar datos del pedido
+  const orderData = {
+    customer: customerData,
+    items: cart.map(item => ({
+      id: item.id,
+      name: item.name,
+      price: item.price,
+      category: item.category,
+      image: item.image
+    })),
+    total: total,
+    itemCount: cart.length
+  };
+  
+  try {
+    // Importar el servicio de pedidos dinámicamente
+    const { ordersService } = await import('./orders.js');
+    const { storage } = await import('./storage.js');
+    
+    // Crear el pedido en Firestore
+    const newOrder = await ordersService.createOrder(orderData);
+    
+    // Reducir el stock de cada producto
+    for (const item of cart) {
+      const product = products.find(p => p.id === item.id);
+      if (product && product.stock > 0) {
+        await storage.updateProduct(item.id, {
+          ...product,
+          stock: product.stock - 1
+        });
+      }
+    }
+    
+    // Mensaje de WhatsApp
+    const message = `🛍️ *Nuevo Pedido #${newOrder.id.substring(0, 8)}*\n\n` +
+      `👤 *Cliente:* ${customerData.name}\n` +
+      `📱 *Teléfono:* ${customerData.phone}\n` +
+      `📍 *Dirección:* ${customerData.address}, ${customerData.city}\n\n` +
+      `📦 *Productos:*\n${cart.map(i => `• ${i.name} - ${formatCurrency(i.price)}`).join('\n')}\n\n` +
+      `💰 *Total: ${formatCurrency(total)}*\n\n` +
+      `${customerData.notes ? `📝 *Notas:* ${customerData.notes}` : ''}`;
+    
+    const encodedMessage = encodeURIComponent(message);
+    
+    // Limpiar carrito
+    cart = [];
+    updateCartIcon();
+    renderCartItems();
+    
+    // Resetear formulario
+    document.getElementById('checkout-form').reset();
+    
+    // Cerrar modal
+    closeCart();
+    
+    // Mostrar confirmación y redirigir al cerrar
+    showNotification(
+      '¡Pedido Exitoso!', 
+      'Tu pedido ha sido registrado. Te redirigiremos a WhatsApp para enviar los detalles.', 
+      '🎉',
+      () => {
+        window.open(`https://wa.me/3015085520?text=${encodedMessage}`, '_blank');
+      }
+    );
+    
+  } catch (error) {
+    console.error('Error al crear el pedido:', error);
+    showNotification('Error', 'Hubo un error al procesar tu pedido. Por favor, intenta de nuevo.', '❌');
+  }
 });
 
-// Cargar productos desde Firestore de forma asíncrona e inicializar
+// 7. Sistema de Notificaciones
+const notificationModal = document.getElementById('notification-modal');
+const notificationBtn = document.getElementById('notification-btn');
+let notificationCallback = null;
+
+const showNotification = (title, message, icon = '✨', callback = null) => {
+  document.getElementById('notification-title').innerText = title;
+  document.getElementById('notification-message').innerText = message;
+  document.getElementById('notification-icon').innerText = icon;
+  
+  notificationCallback = callback;
+  notificationModal.classList.add('active');
+};
+
+const closeNotification = () => {
+  notificationModal.classList.remove('active');
+  if (notificationCallback) {
+    notificationCallback();
+    notificationCallback = null;
+  }
+};
+
+notificationBtn.addEventListener('click', closeNotification);
+// Cerrar al hacer clic fuera
+notificationModal.addEventListener('click', (e) => {
+  if (e.target === notificationModal) closeNotification();
+});
+
+// Cargar productos y categorías desde Firestore de forma asíncrona e inicializar
 async function init() {
+  categories = await categoriesService.getCategories();
   products = await storage.getProducts();
+  renderCategoryFilters();
   renderProducts();
 }
 
 init();
+
