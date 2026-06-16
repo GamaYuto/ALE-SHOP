@@ -1,43 +1,41 @@
 :root {
-  /* Paleta de Colores Ale-Shop */
-  --ale-primary: #2A9D8F;
-  /* Turquesa Ale */
-  --ale-accent: #E76F51;
-  /* Coral Naranja */
-  --ale-dark: #264653;
-  /* Gris Profundo */
-  --text-main: #2C3E50;
+  /* Paleta de Colores Joyería Premium */
+  --ale-primary: #1A1A1A;
+  /* Grafito Profundo */
+  --ale-accent: #D4AF37;
+  /* Oro Joyería */
+  --ale-dark: #000000;
+  /* Negro Absoluto */
+  --text-main: #1A1A1A;
   /* Gris Texto */
-  --bg-light: #F8F9FA;
-  /* Blanco Humo */
+  --bg-light: #FBF9F6;
+  /* Marfil/Crema Suave */
 
   /* Mappings para compatibilidad */
   --primary: var(--ale-primary);
-  --primary-dark: #218c7e;
-  /* Un poco más oscuro que el Turquesa */
+  --primary-dark: #000000;
   --secondary: var(--ale-accent);
   --dark: var(--ale-dark);
-  --gray: var(--text-main);
+  --gray: #666666;
   --light: var(--bg-light);
   --white: #ffffff;
-  --success: #2A9D8F;
-  /* Usamos el primario para éxito también, o mantenemos verde standard si se prefiere, pero el manual sugiere Turquesa */
+  --success: #C5A059;
 
-  /* Espaciado y Bordes */
-  --radius: 12px;
+  /* Espaciado y Bordes - Premium Minimalista */
+  --radius: 4px;
   /* Cards */
-  --radius-btn: 25px;
-  /* Botones Píldora */
-  --radius-input: 8px;
+  --radius-btn: 2px;
+  /* Botones finos */
+  --radius-input: 2px;
   /* Inputs */
 
-  --shadow-sm: 0 1px 3px rgba(38, 70, 83, 0.15);
-  --shadow-md: 0 4px 6px rgba(38, 70, 83, 0.15);
-  --shadow-lg: 0 10px 20px rgba(38, 70, 83, 0.2);
+  --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.03);
+  --shadow-md: 0 6px 16px rgba(0, 0, 0, 0.05);
+  --shadow-lg: 0 10px 24px rgba(0, 0, 0, 0.08);
 
-  /* Fuentes */
-  --font-heading: 'Nunito', sans-serif;
-  --font-body: 'Open Sans', sans-serif;
+  /* Fuentes Premium */
+  --font-heading: 'Playfair Display', serif;
+  --font-body: 'Montserrat', sans-serif;
   --font-main: var(--font-body);
 }
 
@@ -137,10 +135,11 @@ header {
 .hero {
   background: linear-gradient(135deg, var(--ale-dark) 0%, var(--ale-primary) 100%);
   color: white;
-  padding: 5rem 0;
+  padding: 6rem 0;
   text-align: center;
-  border-radius: 0 0 30px 30px;
+  border-radius: 0;
   margin-bottom: 3rem;
+  border-bottom: 3px solid var(--secondary);
 }
 
 .hero h1 {
@@ -226,14 +225,15 @@ header {
   border-radius: var(--radius);
   overflow: hidden;
   box-shadow: var(--shadow-sm);
-  transition: transform 0.3s, box-shadow 0.3s;
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
   position: relative;
   display: flex;
   flex-direction: column;
+  border: 1px solid rgba(0,0,0,0.03);
 }
 
 .product-card:hover {
-  transform: translateY(-10px);
+  transform: translateY(-5px);
   box-shadow: var(--shadow-lg);
 }
 

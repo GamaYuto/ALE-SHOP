@@ -37,14 +37,40 @@ document.querySelector('#app').innerHTML = `
   <main>
     <section class="hero">
       <div class="container">
-        <h1>Moda que inspira.<br>Estilo que perdura.</h1>
-        <p>Descubre las últimas tendencias en ropa, maquillaje y accesorios. Envíos a todo Colombia.</p>
-        <button onclick="document.getElementById('products').scrollIntoView({behavior: 'smooth'})" class="btn-cta">Ver Colección</button>
+        <h1 style="font-family: var(--font-heading); color: var(--ale-accent); font-size: 3.5rem; margin-bottom: 1rem;">Lujo que inspira.<br>Oro Laminado 18K.</h1>
+        <p style="color: #FFFFFF; font-size: 1.2rem; max-width: 600px; margin: 0 auto 2rem;">Boutique digital de joyería fina. Elegancia y durabilidad con 5 años de garantía certificada.</p>
+        <button onclick="document.getElementById('products').scrollIntoView({behavior: 'smooth'})" class="btn-cta" style="background: var(--ale-accent); color: #000000; border-radius: 2px; font-weight: bold; padding: 1rem 2.5rem; text-transform: uppercase; letter-spacing: 1px;">Ver Colección</button>
+      </div>
+    </section>
+
+    <!-- Trust / Warranty Banner -->
+    <section class="trust-banner" style="background: var(--bg-light); padding: 3rem 0; margin-bottom: 4rem; border-top: 1px solid rgba(0,0,0,0.05); border-bottom: 1px solid rgba(0,0,0,0.05);">
+      <div class="container" style="text-align: center;">
+        <h2 style="font-family: var(--font-heading); font-size: 2rem; color: var(--ale-dark); margin-bottom: 0.5rem;">GARANTÍA 🔒💎✍️</h2>
+        <p style="color: var(--ale-accent); font-weight: 600; font-size: 1.1rem; margin-bottom: 2rem; letter-spacing: 2px;">5 AÑOS DE GARANTÍA CERTIFICADA</p>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; max-width: 900px; margin: 0 auto;">
+          <div style="display: flex; flex-direction: column; align-items: center; gap: 0.5rem;">
+            <span style="font-size: 2.5rem;">✨</span>
+            <span style="font-weight: 500; font-size: 0.95rem; color: var(--text-main);">Oro Laminado<br>18K Italiano</span>
+          </div>
+          <div style="display: flex; flex-direction: column; align-items: center; gap: 0.5rem;">
+            <span style="font-size: 2.5rem;">🔬</span>
+            <span style="font-weight: 500; font-size: 0.95rem; color: var(--text-main);">Durabilidad Comprobada<br>en Laboratorio</span>
+          </div>
+          <div style="display: flex; flex-direction: column; align-items: center; gap: 0.5rem;">
+            <span style="font-size: 2.5rem;">🚚</span>
+            <span style="font-weight: 500; font-size: 0.95rem; color: var(--text-main);">Envío<br>Gratis</span>
+          </div>
+          <div style="display: flex; flex-direction: column; align-items: center; gap: 0.5rem;">
+            <span style="font-size: 2.5rem;">🤝</span>
+            <span style="font-weight: 500; font-size: 0.95rem; color: var(--text-main);">Pagas<br>al Recibir</span>
+          </div>
+        </div>
       </div>
     </section>
 
     <section id="products" class="container">
-      <h2 class="products-title">Nuestros Favoritos</h2>
+      <h2 class="products-title" style="font-family: var(--font-heading); font-size: 2.5rem; color: var(--ale-dark);">Colección Exclusiva</h2>
       
       <!-- Filtros de Categorías -->
       <div id="category-filters" style="display: flex; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 2rem; justify-content: center;">

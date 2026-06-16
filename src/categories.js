@@ -20,12 +20,12 @@ export const categoriesService = {
         categories.push({ id: doc.id, ...doc.data() });
       });
       
-      // Si no hay categorías, devolver las predeterminadas
+      // Si no hay categorías, devolver las predeterminadas (Joyería Fina)
       if (categories.length === 0) {
         return [
-          { id: 'default-1', name: 'Ropa', icon: '👗' },
-          { id: 'default-2', name: 'Maquillaje', icon: '💄' },
-          { id: 'default-3', name: 'Accesorios', icon: '👜' }
+          { id: 'default-1', name: 'Anillos', icon: '💍' },
+          { id: 'default-2', name: 'Cadenas', icon: '✨' },
+          { id: 'default-3', name: 'Exclusivos', icon: '👑' }
         ];
       }
       
