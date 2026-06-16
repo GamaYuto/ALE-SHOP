@@ -35,11 +35,11 @@ authService.subscribeToAuthChanges((user) => {
   if (user) {
     // Usuario autenticado
     loginScreen.style.display = 'none';
-    dashboardScreen.style.display = 'block';
+    dashboardScreen.style.display = 'flex';
     loadData();
   } else {
     // Usuario no autenticado
-    loginScreen.style.display = 'block';
+    loginScreen.style.display = 'flex';
     dashboardScreen.style.display = 'none';
   }
 });
@@ -77,24 +77,27 @@ const sectionOrders = document.getElementById('section-orders');
 const sectionProducts = document.getElementById('section-products');
 const sectionCategories = document.getElementById('section-categories');
 
+const topbarTitle = document.getElementById('topbar-title');
+
 const switchTab = (activeTab, activeSection) => {
   // Ocultar todas las secciones
   sectionOrders.style.display = 'none';
   sectionProducts.style.display = 'none';
   sectionCategories.style.display = 'none';
   
-  // Desactivar todas las pestañas
+  // Desactivar todas las pestañas (sidebar-btn)
   [tabOrders, tabProducts, tabCategories].forEach(tab => {
     tab.classList.remove('active');
-    tab.style.borderBottom = '3px solid transparent';
-    tab.style.color = 'var(--gray)';
   });
   
   // Activar la pestaña y sección seleccionada
   activeTab.classList.add('active');
-  activeTab.style.borderBottom = '3px solid var(--primary)';
-  activeTab.style.color = 'var(--primary)';
   activeSection.style.display = 'block';
+
+  // Cambiar el título del Header (topbar)
+  if (activeSection === sectionOrders) topbarTitle.innerText = 'Gestión de Pedidos';
+  if (activeSection === sectionProducts) topbarTitle.innerText = 'Inventario de Productos';
+  if (activeSection === sectionCategories) topbarTitle.innerText = 'Categorías';
 
   // Re-renderizar datos para asegurar el estado limpio del DOM
   if (activeSection === sectionOrders) renderOrdersTable();

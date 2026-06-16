@@ -6,19 +6,20 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Administrador | Vittoria Joyas</title>
-    <!-- Usamos los mismos estilos base más algunos extras -->
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700&family=Open+Sans:wght@400;600&display=swap"
-        rel="stylesheet">
+    <!-- Fuentes Premium de la Marca -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
 </head>
 
 <body>
     <div id="admin-app">
 
         <!-- 1. Pantalla de Login -->
-        <div id="login-screen" class="admin-container"
-            style="max-width: 400px; margin: 100px auto; padding: 2rem; background: white; border-radius: 15px; box-shadow: var(--shadow); text-align: center;">
-            <img src="/LOGO.svg" alt="Vittoria Joyas Logo" style="height: 60px; margin-bottom: 1rem;">
-            <h2 style="text-align:center; margin-bottom: 1.5rem;">🔐 Acceso Restringido</h2>
+        <div id="login-screen" class="login-wrapper">
+            <div class="login-card">
+                <img src="/LOGO.svg" alt="Vittoria Joyas Logo" class="login-logo">
+                <h2 class="login-title">Acceso Exclusivo</h2>
             <form id="login-form" class="admin-form">
                 <div class="form-group">
                     <label>Usuario</label>
@@ -30,36 +31,41 @@
                 </div>
                 <button type="submit" class="btn-cta" style="width:100%;">Ingresar</button>
             </form>
+            </div>
         </div>
 
         <!-- 2. Dashboard (Oculto inicialmente) -->
-        <div id="dashboard-screen" class="container" style="display: none; padding-top: 2rem;">
-            <header class="admin-header">
-                <div style="display: flex; align-items: center; gap: 1rem;">
-                    <img src="/LOGO.svg" alt="Vittoria Joyas Logo" style="height: 40px;">
-                    <h2 style="margin: 0;">Panel de Control</h2>
+        <div id="dashboard-screen" class="admin-layout" style="display: none;">
+            
+            <!-- Barra Lateral (Sidebar) -->
+            <aside class="admin-sidebar">
+                <div class="sidebar-header">
+                    <img src="/LOGO.svg" alt="Vittoria Joyas Logo" class="sidebar-logo">
                 </div>
-                <div style="display:flex; gap: 1rem;">
-                    <button id="btn-view-site" class="btn-secondary">Ver Tienda</button>
-                    <button id="btn-logout" class="btn-secondary">Cerrar Sesión</button>
+                <nav class="sidebar-nav">
+                    <button id="tab-orders" class="sidebar-btn active">
+                        <span class="icon">🛒</span> Pedidos
+                    </button>
+                    <button id="tab-products" class="sidebar-btn">
+                        <span class="icon">📦</span> Inventario
+                    </button>
+                    <button id="tab-categories" class="sidebar-btn">
+                        <span class="icon">🏷️</span> Categorías
+                    </button>
+                </nav>
+                <div class="sidebar-footer">
+                    <button id="btn-view-site" class="sidebar-btn secondary">👁️ Ver Tienda</button>
+                    <button id="btn-logout" class="sidebar-btn danger">🚪 Cerrar Sesión</button>
                 </div>
-            </header>
+            </aside>
 
-            <!-- Pestañas de navegación -->
-            <div style="display: flex; gap: 1rem; margin-bottom: 2rem; border-bottom: 2px solid #e5e7eb;">
-                <button id="tab-orders" class="tab-btn active"
-                    style="padding: 1rem 2rem; border: none; background: none; cursor: pointer; font-weight: 600; border-bottom: 3px solid var(--primary); color: var(--primary);">
-                    🛒 Pedidos
-                </button>
-                <button id="tab-products" class="tab-btn"
-                    style="padding: 1rem 2rem; border: none; background: none; cursor: pointer; font-weight: 600; border-bottom: 3px solid transparent; color: var(--gray);">
-                    📦 Productos
-                </button>
-                <button id="tab-categories" class="tab-btn"
-                    style="padding: 1rem 2rem; border: none; background: none; cursor: pointer; font-weight: 600; border-bottom: 3px solid transparent; color: var(--gray);">
-                    🏷️ Categorías
-                </button>
-            </div>
+            <!-- Contenido Principal -->
+            <main class="admin-main">
+                <header class="admin-topbar">
+                    <h2 id="topbar-title" class="topbar-title">Gestión de Pedidos</h2>
+                </header>
+                
+                <div class="admin-content-area">
 
             <!-- Sección de Pedidos -->
             <section id="section-orders" class="admin-section">
@@ -158,6 +164,8 @@
                     </table>
                 </div>
             </section>
+                </div> <!-- End admin-content-area -->
+            </main>
         </div>
 
         <!-- 3. Modal para Crear/Editar Producto (Oculto) -->
