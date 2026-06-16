@@ -64,9 +64,24 @@ export const storage = {
     }
   },
 
-  // Mantener el método saveProducts por compatibilidad si es necesario, 
-  // aunque ahora usaremos los métodos individuales.
-  saveProducts: async (products) => {
-    console.warn("saveProducts (bulk) no es recomendado para Firestore, usa métodos individuales.");
+  // --- Manejo del Estado del Carrito (LocalStorage) ---
+  getCart: () => {
+    try {
+      const cartStr = localStorage.getItem('ale-shop-cart');
+      return cartStr ? JSON.parse(cartStr) : [];
+    } catch (error) {
+      console.error("Error al leer el carrito:", error);
+      return [];
+    }
+  },
+
+  saveCart: (cart) => {
+    try {
+      localStorage.setItem('ale-shop-cart', JSON.stringify(cart));
+      // Despachamos evento global para desacoplar UI (Arquitectura Orientada a Eventos)
+      window.dispatchEvent(new CustomEvent('cart-updated'));
+    } catch (error) {
+      console.error("Error al guardar el carrito:", error);
+    }
   }
 };

@@ -5,7 +5,7 @@ import { categoriesService } from './categories.js';
 // 1. Estados de la Aplicación
 let products = [];
 let categories = [];
-let cart = [];
+let cart = storage.getCart(); // Estado inicializado desde LocalStorage
 let isCartOpen = false;
 let currentFilter = 'all'; // 'all' o el nombre de una categoría
 
@@ -250,8 +250,8 @@ const addToCart = (id) => {
   const product = products.find(p => p.id === id);
   if (product) {
     cart.push(product);
-    updateCartIcon();
-    renderCartItems();
+    // Guarda en LocalStorage y despacha 'cart-updated'
+    storage.saveCart(cart);
     openCart();
     
     const btn = document.querySelector(`button[data-id="${id}"]`);
@@ -265,9 +265,17 @@ const addToCart = (id) => {
 
 const removeFromCart = (index) => {
   cart.splice(index, 1);
+  // Guarda en LocalStorage y despacha 'cart-updated'
+  storage.saveCart(cart);
+};
+
+// Escuchador global de eventos (Arquitectura desacoplada)
+window.addEventListener('cart-updated', () => {
+  // Sincronizar estado y renderizar UI
+  cart = storage.getCart();
   updateCartIcon();
   renderCartItems();
-};
+});
 
 const updateCartIcon = () => {
   document.querySelector('#cart-count').innerText = cart.length;
@@ -417,12 +425,13 @@ document.querySelector('#checkout-form').addEventListener('submit', async (e) =>
       `💰 *Total: ${formatCurrency(total)}*\n\n` +
       `${customerData.notes ? `📝 *Notas:* ${customerData.notes}` : ''}`;
     
+    // Codificación estricta del string para URL de WhatsApp
     const encodedMessage = encodeURIComponent(message);
+    const whatsappUrl = `https://wa.me/573015085520?text=${encodedMessage}`;
     
-    // Limpiar carrito
+    // Limpiar carrito de manera reactiva
     cart = [];
-    updateCartIcon();
-    renderCartItems();
+    storage.saveCart(cart);
     
     // Resetear formulario
     document.getElementById('checkout-form').reset();
@@ -436,7 +445,7 @@ document.querySelector('#checkout-form').addEventListener('submit', async (e) =>
       'Tu pedido ha sido registrado. Te redirigiremos a WhatsApp para enviar los detalles.', 
       '🎉',
       () => {
-        window.open(`https://wa.me/3015085520?text=${encodedMessage}`, '_blank');
+        window.open(whatsappUrl, '_blank');
       }
     );
     
