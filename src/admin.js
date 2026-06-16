@@ -95,6 +95,11 @@ const switchTab = (activeTab, activeSection) => {
   activeTab.style.borderBottom = '3px solid var(--primary)';
   activeTab.style.color = 'var(--primary)';
   activeSection.style.display = 'block';
+
+  // Re-renderizar datos para asegurar el estado limpio del DOM
+  if (activeSection === sectionOrders) renderOrdersTable();
+  if (activeSection === sectionProducts) renderTable();
+  if (activeSection === sectionCategories) renderCategoriesTable();
 };
 
 tabOrders.addEventListener('click', () => switchTab(tabOrders, sectionOrders));

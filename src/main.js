@@ -193,8 +193,8 @@ document.querySelector('#app').innerHTML = `
         <h3>Contacto</h3>
         <ul>
           <li>WhatsApp: +57 301 508 5520</li>
-          <li>Instagram: @vottoriajoyas</li>
-          <li>Bogotá, Colombia</li>
+          <li>Instagram: @vittoriajoyas</li>
+          <li>Barranquilla, Colombia</li>
         </ul>
       </div>
     </div>
@@ -204,21 +204,21 @@ document.querySelector('#app').innerHTML = `
 // 4. Función para renderizar los filtros de categorías
 const renderCategoryFilters = () => {
   const filtersContainer = document.querySelector('#category-filters');
-  
+
   const allButton = `
     <button class="category-filter ${currentFilter === 'all' ? 'active' : ''}" data-category="all">
       🌟 Todos
     </button>
   `;
-  
+
   const categoryButtons = categories.map(cat => `
     <button class="category-filter ${currentFilter === cat.name ? 'active' : ''}" data-category="${cat.name}">
       ${cat.icon || '📦'} ${cat.name}
     </button>
   `).join('');
-  
+
   filtersContainer.innerHTML = allButton + categoryButtons;
-  
+
   // Agregar eventos a los botones de filtro
   document.querySelectorAll('.category-filter').forEach(button => {
     button.addEventListener('click', (e) => {
@@ -232,12 +232,12 @@ const renderCategoryFilters = () => {
 // 5. Función para mostrar los productos en la pantalla
 const renderProducts = () => {
   const productList = document.querySelector('#product-list');
-  
+
   // Filtrar productos según la categoría seleccionada
-  const filteredProducts = currentFilter === 'all' 
+  const filteredProducts = currentFilter === 'all'
     ? products.filter(p => p.active !== false)
     : products.filter(p => p.category === currentFilter && p.active !== false);
-  
+
   if (filteredProducts.length === 0) {
     productList.innerHTML = '<p style="text-align:center; grid-column: 1/-1; padding: 2rem;">No hay productos disponibles en esta categoría.</p>';
     return;
@@ -274,7 +274,7 @@ const addToCart = (id) => {
     // Guarda en LocalStorage y despacha 'cart-updated'
     storage.saveCart(cart);
     openCart();
-    
+
     const btn = document.querySelector(`button[data-id="${id}"]`);
     if (btn) {
       const originalText = btn.innerText;
@@ -305,7 +305,7 @@ const updateCartIcon = () => {
 const renderCartItems = () => {
   const cartItemsContainer = document.querySelector('#cart-items');
   const totalPriceElement = document.querySelector('#cart-total-price');
-  
+
   const total = cart.reduce((sum, item) => sum + item.price, 0);
   totalPriceElement.innerText = formatCurrency(total);
 
@@ -359,11 +359,11 @@ const showCheckoutView = () => {
     showNotification('Carrito Vacío', '¡Tu carrito está vacío!', '🛒');
     return;
   }
-  
+
   document.getElementById('cart-view').style.display = 'none';
   document.getElementById('checkout-view').style.display = 'block';
   document.getElementById('cart-title').innerText = 'Datos de Envío';
-  
+
   // Actualizar el total en el checkout
   const total = cart.reduce((sum, item) => sum + item.price, 0);
   document.getElementById('checkout-total-price').innerText = formatCurrency(total);
@@ -385,12 +385,12 @@ document.querySelector('#back-to-cart-btn').addEventListener('click', showCartVi
 // Manejar el envío del formulario de checkout
 document.querySelector('#checkout-form').addEventListener('submit', async (e) => {
   e.preventDefault();
-  
+
   if (cart.length === 0) {
     showNotification('Carrito Vacío', '¡Tu carrito está vacío!', '🛒');
     return;
   }
-  
+
   // Recopilar datos del cliente
   const customerData = {
     name: document.getElementById('customer-name').value,
@@ -400,10 +400,10 @@ document.querySelector('#checkout-form').addEventListener('submit', async (e) =>
     city: document.getElementById('customer-city').value,
     notes: document.getElementById('customer-notes').value || ''
   };
-  
+
   // Calcular total
   const total = cart.reduce((sum, item) => sum + item.price, 0);
-  
+
   // Preparar datos del pedido
   const orderData = {
     customer: customerData,
@@ -417,15 +417,15 @@ document.querySelector('#checkout-form').addEventListener('submit', async (e) =>
     total: total,
     itemCount: cart.length
   };
-  
+
   try {
     // Importar el servicio de pedidos dinámicamente
     const { ordersService } = await import('./orders.js');
     const { storage } = await import('./storage.js');
-    
+
     // Crear el pedido en Firestore
     const newOrder = await ordersService.createOrder(orderData);
-    
+
     // Reducir el stock de cada producto
     for (const item of cart) {
       const product = products.find(p => p.id === item.id);
@@ -436,7 +436,7 @@ document.querySelector('#checkout-form').addEventListener('submit', async (e) =>
         });
       }
     }
-    
+
     // Mensaje de WhatsApp
     const message = `🛍️ *Nuevo Pedido #${newOrder.id.substring(0, 8)}*\n\n` +
       `👤 *Cliente:* ${customerData.name}\n` +
@@ -445,31 +445,31 @@ document.querySelector('#checkout-form').addEventListener('submit', async (e) =>
       `📦 *Productos:*\n${cart.map(i => `• ${i.name} - ${formatCurrency(i.price)}`).join('\n')}\n\n` +
       `💰 *Total: ${formatCurrency(total)}*\n\n` +
       `${customerData.notes ? `📝 *Notas:* ${customerData.notes}` : ''}`;
-    
+
     // Codificación estricta del string para URL de WhatsApp
     const encodedMessage = encodeURIComponent(message);
     const whatsappUrl = `https://wa.me/573015085520?text=${encodedMessage}`;
-    
+
     // Limpiar carrito de manera reactiva
     cart = [];
     storage.saveCart(cart);
-    
+
     // Resetear formulario
     document.getElementById('checkout-form').reset();
-    
+
     // Cerrar modal
     closeCart();
-    
+
     // Mostrar confirmación y redirigir al cerrar
     showNotification(
-      '¡Pedido Exitoso!', 
-      'Tu pedido ha sido registrado. Te redirigiremos a WhatsApp para enviar los detalles.', 
+      '¡Pedido Exitoso!',
+      'Tu pedido ha sido registrado. Te redirigiremos a WhatsApp para enviar los detalles.',
       '🎉',
       () => {
         window.open(whatsappUrl, '_blank');
       }
     );
-    
+
   } catch (error) {
     console.error('Error al crear el pedido:', error);
     showNotification('Error', 'Hubo un error al procesar tu pedido. Por favor, intenta de nuevo.', '❌');
@@ -485,7 +485,7 @@ const showNotification = (title, message, icon = '✨', callback = null) => {
   document.getElementById('notification-title').innerText = title;
   document.getElementById('notification-message').innerText = message;
   document.getElementById('notification-icon').innerText = icon;
-  
+
   notificationCallback = callback;
   notificationModal.classList.add('active');
 };
