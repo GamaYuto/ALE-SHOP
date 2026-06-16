@@ -23,7 +23,7 @@ document.querySelector('#app').innerHTML = `
   <header>
     <div class="container header-content">
       <a href="#" class="logo">
-        <img src="/LOGO.svg" alt="Vottoria joyas Logo" style="height: 45px; width: auto;">
+        <img src="/LOGO.svg" alt="Vittoria Joyas Logo" style="height: 45px; width: auto;">
       </a>
       <div style="display: flex; gap: 1rem; align-items: center;">
         <a href="/admin.html" class="btn-secondary" style="text-decoration: none; font-size: 0.9rem; padding: 0.5rem 1rem;">⚙️ Admin</a>
@@ -178,7 +178,7 @@ document.querySelector('#app').innerHTML = `
   <footer>
     <div class="container footer-content">
       <div class="footer-section">
-        <h3>Vottoria joyas</h3>
+        <h3>Vittoria Joyas</h3>
         <p>Tu joyería fina de confianza en Colombia.</p>
       </div>
       <div class="footer-section">

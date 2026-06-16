@@ -1,0 +1,36 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Reglas para la colección 'products'
+    match /products/{product} {
+      // Lectura pública permitida para que el catálogo sea visible a los clientes
+      allow read: if true;
+      
+      // Creación y eliminación solo para administradores autenticados
+      allow create, delete: if request.auth != null;
+      
+      // Actualización: administradores, o cualquier usuario solo para reducir el stock (al hacer un pedido)
+      // Asegurando que no puedan modificar precios ni otros datos críticos (hasOnly(['stock']))
+      allow update: if request.auth != null || (
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['stock']) &&
+        request.resource.data.stock < resource.data.stock
+      );
+    }
+
+    // Reglas para la colección 'categories'
+    match /categories/{category} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+
+    // Reglas para la colección 'orders'
+    match /orders/{order} {
+      // Cualquier cliente puede crear un pedido
+      allow create: if true;
+      // Solo administradores pueden ver, modificar el estado o eliminar pedidos
+      allow read, update, delete: if request.auth != null;
+    }
+  }
+}
