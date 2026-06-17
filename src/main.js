@@ -37,61 +37,61 @@ document.querySelector('#app').innerHTML = `
   <main>
     <section class="hero">
       <div class="container">
-        <h1 style="font-family: var(--font-heading); color: var(--ale-accent); font-size: 3.5rem; margin-bottom: 1rem;">Lujo que inspira.<br>Oro Laminado 18K.</h1>
-        <p style="color: #FFFFFF; font-size: 1.2rem; max-width: 600px; margin: 0 auto 2rem;">Boutique digital de joyería fina. Elegancia y durabilidad con 5 años de garantía certificada.</p>
-        <button onclick="document.getElementById('products').scrollIntoView({behavior: 'smooth'})" class="btn-cta" style="background: var(--ale-accent); color: #000000; border-radius: 2px; font-weight: bold; padding: 1rem 2.5rem; text-transform: uppercase; letter-spacing: 1px;">Ver Colección</button>
+        <h1>Lujo que inspira.<br>Oro Laminado 18K.</h1>
+        <p>Boutique digital de joyería fina. Elegancia y durabilidad con 5 años de garantía certificada.</p>
+        <button onclick="document.getElementById('products').scrollIntoView({behavior: 'smooth'})" class="btn-cta">Ver Colección</button>
       </div>
     </section>
 
     <!-- Trust / Warranty Banner -->
-    <section class="trust-banner" style="background: var(--bg-light); padding: 4rem 0; margin-bottom: 4rem; border-top: 1px solid rgba(0,0,0,0.05); border-bottom: 1px solid rgba(0,0,0,0.05);">
-      <div class="container" style="text-align: center; max-width: 800px;">
-        <h2 style="font-family: var(--font-heading); font-size: 2.2rem; color: var(--ale-dark); margin-bottom: 0.5rem;">
+    <section class="trust-banner">
+      <div class="container">
+        <h2>
           GARANTÍA 🔒💎✍️<br>
-          <span style="font-size: 1.1rem; font-family: var(--font-body); font-weight: 400; color: var(--text-main);">(Incluye tarjeta física de garantía)</span>
+          <span>(Incluye tarjeta física de garantía)</span>
         </h2>
         
-        <p style="color: var(--text-main); font-size: 1.1rem; line-height: 1.8; margin: 2rem auto;">
+        <p class="trust-intro">
           Nuestras joyas son elaboradas bajo estrictos estándares internacionales de calidad y cuentan con un respaldo exclusivo de <strong>5 AÑOS DE GARANTÍA</strong>:
         </p>
 
-        <ul style="list-style: none; padding: 0; margin: 0 auto 2.5rem; text-align: left; display: inline-block; font-size: 1.05rem; line-height: 1.8; color: var(--text-main);">
-          <li><span style="color: var(--ale-accent); margin-right: 0.5rem;">💠</span> Diseñadas para conservar su color y acabado ✨✨</li>
-          <li><span style="color: var(--ale-accent); margin-right: 0.5rem;">💠</span> Oro Laminado 18K italiano</li>
-          <li><span style="color: var(--ale-accent); margin-right: 0.5rem;">💠</span> Durabilidad comprobada en laboratorio 🔬</li>
-          <li><span style="color: var(--ale-accent); margin-right: 0.5rem;">💠</span> Joyas creadas para acompañarte en cada momento especial ✨✨</li>
+        <ul class="trust-list">
+          <li><span>💠</span> Diseñadas para conservar su color y acabado ✨✨</li>
+          <li><span>💠</span> Oro Laminado 18K italiano</li>
+          <li><span>💠</span> Durabilidad comprobada en laboratorio 🔬</li>
+          <li><span>💠</span> Joyas creadas para acompañarte en cada momento especial ✨✨</li>
         </ul>
 
-        <div style="background: var(--white); padding: 2rem; border-radius: var(--radius); border: 1px solid rgba(0,0,0,0.03); box-shadow: var(--shadow-sm); margin-bottom: 3rem; text-align: left;">
-          <p style="color: var(--text-main); font-size: 1.05rem; line-height: 1.7; margin: 0;">
-            <span style="font-size: 1.5rem; vertical-align: middle; margin-right: 0.5rem;">🔬</span> 
+        <div class="trust-highlight">
+          <p>
+            <span>🔬</span>
             Fundimos Oro 18K sobre titanio, creando un blindaje con el color, brillo y textura del Oro Italiano. Su resistencia está comprobada en laboratorio, y nuestra garantía es <strong>100% certificada</strong>.
           </p>
         </div>
 
-        <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 2.5rem; border-top: 1px solid rgba(0,0,0,0.05); padding-top: 2.5rem;">
-          <div style="display: flex; flex-direction: column; align-items: center; gap: 0.5rem;">
-            <span style="font-size: 2rem;">🏆</span>
-            <span style="font-weight: 600; font-size: 0.85rem; color: var(--ale-dark); text-transform: uppercase; letter-spacing: 1px;">100% Garantizado</span>
+        <div class="trust-badges">
+          <div class="badge-item">
+            <span class="badge-icon">🏆</span>
+            <span class="badge-text">100% Garantizado</span>
           </div>
-          <div style="display: flex; flex-direction: column; align-items: center; gap: 0.5rem;">
-            <span style="font-size: 2rem;">⭐</span>
-            <span style="font-weight: 600; font-size: 0.85rem; color: var(--ale-dark); text-transform: uppercase; letter-spacing: 1px;">100% Satisfacción</span>
+          <div class="badge-item">
+            <span class="badge-icon">⭐</span>
+            <span class="badge-text">100% Satisfacción</span>
           </div>
-          <div style="display: flex; flex-direction: column; align-items: center; gap: 0.5rem;">
-            <span style="font-size: 2rem;">🚚</span>
-            <span style="font-weight: 600; font-size: 0.85rem; color: var(--ale-dark); text-transform: uppercase; letter-spacing: 1px;">Envío Gratis</span>
+          <div class="badge-item">
+            <span class="badge-icon">🚚</span>
+            <span class="badge-text">Envío Gratis</span>
           </div>
-          <div style="display: flex; flex-direction: column; align-items: center; gap: 0.5rem;">
-            <span style="font-size: 2rem;">🤝</span>
-            <span style="font-weight: 600; font-size: 0.85rem; color: var(--ale-dark); text-transform: uppercase; letter-spacing: 1px;">Pagas al Recibir</span>
+          <div class="badge-item">
+            <span class="badge-icon">🤝</span>
+            <span class="badge-text">Pagas al Recibir</span>
           </div>
         </div>
       </div>
     </section>
 
     <section id="products" class="container">
-      <h2 class="products-title" style="font-family: var(--font-heading); font-size: 2.5rem; color: var(--ale-dark);">Colección Exclusiva</h2>
+      <h2 class="products-title">Colección Exclusiva</h2>
       
       <!-- Filtros de Categorías -->
       <div id="category-filters" style="display: flex; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 2rem; justify-content: center;">
