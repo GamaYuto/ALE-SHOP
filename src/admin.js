@@ -157,12 +157,36 @@ inputFile.addEventListener('change', async (e) => {
 });
 // -----------------------------------
 
+
 // 3. Cargar datos
 const loadData = async () => {
-  await loadOrders();
-  await loadCategories();
-  await loadProducts();
+  try {
+    // Desacoplar obtención de datos de renderizado para evitar condiciones de carrera
+    const fetchOrders = async () => { orders = await ordersService.getOrders(); };
+    const fetchProducts = async () => { products = await storage.getProducts(); };
+    const fetchCategories = async () => { categories = await categoriesService.getCategories(); };
+
+    // Ejecutar peticiones de forma concurrente
+    await Promise.all([
+      fetchOrders(),
+      fetchProducts(),
+      fetchCategories()
+    ]);
+
+    // Renderizado unificado por lotes para garantizar consistencia visual y de datos
+    renderOrdersTable();
+    renderTable();
+    renderCategoriesTable();
+    updateCategorySelect();
+
+  } catch (error) {
+    console.error("Error al cargar los datos del administrador concurrentemente:", error);
+    if (typeof showNotification === 'function') {
+      showNotification('Error de Carga', 'No se pudieron sincronizar los datos de la tienda.', '⚠️');
+    }
+  }
 };
+
 
 const loadOrders = async () => {
   orders = await ordersService.getOrders();
